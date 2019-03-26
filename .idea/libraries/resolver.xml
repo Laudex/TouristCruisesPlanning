@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="resolver">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/libs/xmlbeans/resolver.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/xmlbeans/xbean.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/xmlbeans/xbean_xpath.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/xmlbeans/xmlpublic.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
