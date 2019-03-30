@@ -16,6 +16,17 @@ public class Repository {
     private static List<Speed> speeds;
     private static List<Itinerary> itineraries;
 
+    public static Arc findArcByPorts(int startPortId, int finishPortId){
+        for (Arc arc : arcs){
+            if (arc.getFirstPort().getPortId() == startPortId){
+                if (arc.getSecondPort().getPortId() == finishPortId){
+                    return arc;
+                }
+            }
+        }
+        return null;
+    }
+
     public static List<Port> getPorts() {
         return ports;
     }

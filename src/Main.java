@@ -1,4 +1,5 @@
 import algorithm.InitialSolution;
+import algorithm.Validator;
 import model.Arc;
 import model.Itinerary;
 import model.Port;
@@ -16,7 +17,7 @@ public class Main {
     // максимально допустимое число портов, которые могут одновременно состоять в 2-х маршрутах
     public static int delta = 2;
     // минимальное количество портов(остановок) в каждом маршруте
-    public static int gamma = 2;
+    public static int gamma = 4;
     // максимальное число маршрутов, проходящих через порт i
     public static int Qmax = 2;
     // минимальное число маршрутов, проходящих через порт i
@@ -55,7 +56,7 @@ public class Main {
         Repository.setItineraries(itineraries);
 
         InitialSolution.findInitialSolution(delta, gamma, Qmax, Qmin);
-
+        Validator.validateTimeConstraint(Repository.getItineraries());
 
 
 
