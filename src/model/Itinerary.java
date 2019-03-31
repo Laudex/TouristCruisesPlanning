@@ -8,7 +8,7 @@ public class Itinerary {
     private int routeId;
     private Vessel vessel;
     private List<Port> numberOfStops = new ArrayList<>();
-    private List<Arc> arcs = new ArrayList<>();
+    private List<ArcSolution> arcs = new ArrayList<>();
     private int minimunNumberOfStops;
     private double routeTime;
 
@@ -56,5 +56,13 @@ public class Itinerary {
 
     public void setVessel(Vessel vessel) {
         this.vessel = vessel;
+    }
+
+    public List<ArcSolution> getArcs() {
+        return arcs;
+    }
+
+    public void setArcs(List<ArcSolution> arcs) {
+        this.arcs = arcs;
     }
 }

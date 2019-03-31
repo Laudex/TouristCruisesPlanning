@@ -8,7 +8,7 @@ public class Port {
     private int portId;
     private int visitLimit;
     private List<Itinerary> visitedItineraries = new ArrayList<>();
-    private List<Integer> visitedVesselsId;
+    private List<Integer> visitedDays = new ArrayList<>();
     private double minimumServiceTime;
     private double requiredPreServiceTime;
     private double requiredPostServiceTime;
@@ -36,7 +36,14 @@ public class Port {
     public Port(int portId) {
         this.portId = portId;
         incompatibleVessels = new ArrayList<>();
-        visitedVesselsId = new ArrayList<>();
+    }
+
+    public List<Integer> getVisitedDays() {
+        return visitedDays;
+    }
+
+    public void setVisitedDays(List<Integer> visitedDays) {
+        this.visitedDays = visitedDays;
     }
 
     public int getPortId() {

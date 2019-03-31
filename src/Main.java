@@ -1,3 +1,4 @@
+import algorithm.AvailableMoves;
 import algorithm.InitialSolution;
 import algorithm.Validator;
 import model.Arc;
@@ -39,8 +40,8 @@ public class Main {
         }
 
         for (Port port : ports){
-            port.setStartTime(8);
-            port.setEndTime(22);
+            port.setStartTime(16);
+            port.setEndTime(14);
         }
 
         Repository.setPorts(ports);
@@ -56,8 +57,23 @@ public class Main {
         Repository.setItineraries(itineraries);
 
         InitialSolution.findInitialSolution(delta, gamma, Qmax, Qmin);
-        Validator.validateTimeConstraint(Repository.getItineraries());
+        for (Itinerary itinerary : Repository.getItineraries()){
+            int day = 1;
+            for (Port port : itinerary.getNumberOfStops()){
+                if (port.getPortId() != 2 && port.getPortId() != 3){
+                    port.getVisitedDays().add(day);
+                    day++;
+                }
 
+            }
+        }
+
+        double penaltyTimeConstraint = Validator.validateTimeConstraint(Repository.getItineraries());
+        double penaltyServiceTime = Validator.validateServiceTime(Repository.getItineraries());
+        double penaltyNumberOfStops = Validator.validateNumberOfPorts(Repository.getItineraries(), gamma);
+        double penaltyNumberOfSharedStops = Validator.validateNumberOfSharedPorts(Repository.getItineraries(), delta);
+        System.out.println(penaltyNumberOfSharedStops);
+        AvailableMoves.exchangePorts(itineraries.get(0));
 
 
     }
