@@ -8,7 +8,9 @@ import model.Vessel;
 import service.data.Repository;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class InitialSolution {
 
@@ -19,6 +21,7 @@ public class InitialSolution {
 
     public static void findInitialSolution(int delta, int gamma, int Qmax, int Qmin) {
         List<ArcSolution> arcSolutions = new ArrayList<>();
+        Set<Port> sharedPorts = new HashSet<>();
         int arcSoluId = 1;
         //Итерация по остановкам
         for (int i = 0; i < gamma; i++) {
@@ -26,7 +29,7 @@ public class InitialSolution {
             for (Itinerary itinerary : Repository.getItineraries()) {
                 Port currentPort = itinerary.getVessel().getCurrentPosition();
                 List<Arc> availableArcs = findAvailableArc(itinerary.getVessel(), currentPort);
-                Arc nextArc = findNextArc(availableArcs, itinerary, portVisitedInSameDay);
+                Arc nextArc = findNextArc(availableArcs, itinerary, portVisitedInSameDay, sharedPorts, delta, Qmax);
                 if (nextArc == null) {
                     System.out.println("Плыть больше некуда!");
                     continue;
@@ -44,6 +47,9 @@ public class InitialSolution {
                 if (!itineraryIsNotPresent) {
                     nextArc.getSecondPort().setVisitLimit(nextArc.getSecondPort().getVisitLimit() - 1);
                     nextArc.getSecondPort().getVisitedItineraries().add(itinerary);
+                }
+                if (nextArc.getSecondPort().getVisitedItineraries().size() > 1){
+                    sharedPorts.add(nextArc.getSecondPort());
                 }
                 itinerary.getVessel().getServiceTime().put(nextArc.getSecondPort().getPortId(), nextArc.getSecondPort().getMinimumServiceTime());
                 ArcSolution arcSolution = new ArcSolution(arcSoluId, nextArc, itinerary.getVessel(), itinerary.getVessel().getCurrentSpeed());
@@ -71,7 +77,7 @@ public class InitialSolution {
 
         }
         while (!notFinished.isEmpty()) {
-            buildExtraNodesToFinish(notFinished, arcSoluId, arcSolutions);
+            buildExtraNodesToFinish(notFinished, arcSoluId, arcSolutions, sharedPorts, delta, Qmax);
             List<Integer> indexToRemove = new ArrayList<>();
             for (Itinerary itinerary : notFinished) {
                 List<Port> nodes = itinerary.getNumberOfStops();
@@ -107,12 +113,12 @@ public class InitialSolution {
 
     }
 
-    public static void buildExtraNodesToFinish(List<Itinerary> notFinished, int arcSoluId, List<ArcSolution> arcSolutions) {
+    public static void buildExtraNodesToFinish(List<Itinerary> notFinished, int arcSoluId, List<ArcSolution> arcSolutions, Set<Port> sharedPorts, int delta, int qmax) {
         List<Port> portVisitedInSameDay = new ArrayList<>();
         for (Itinerary itinerary : notFinished) {
             Port currentPort = itinerary.getVessel().getCurrentPosition();
             List<Arc> availableArcs = findAvailableArc(itinerary.getVessel(), currentPort);
-            Arc nextArc = findNextArc(availableArcs, itinerary, portVisitedInSameDay);
+            Arc nextArc = findNextArc(availableArcs, itinerary, portVisitedInSameDay, sharedPorts, delta, qmax);
             if (nextArc == null) {
                 System.out.println("Плыть больше некуда!");
                 continue;
@@ -130,6 +136,9 @@ public class InitialSolution {
             if (!itineraryIsNotPresent) {
                 nextArc.getSecondPort().setVisitLimit(nextArc.getSecondPort().getVisitLimit() - 1);
                 nextArc.getSecondPort().getVisitedItineraries().add(itinerary);
+            }
+            if (nextArc.getSecondPort().getVisitedItineraries().size() > 0){
+                sharedPorts.add(nextArc.getSecondPort());
             }
             itinerary.getVessel().getServiceTime().put(nextArc.getSecondPort().getPortId(), nextArc.getSecondPort().getMinimumServiceTime());
             ArcSolution arcSolution = new ArcSolution(arcSoluId, nextArc, itinerary.getVessel(), itinerary.getVessel().getCurrentSpeed());
@@ -193,7 +202,7 @@ public class InitialSolution {
         return availableArcsFinal;
     }
 
-    private static Arc findNextArc(List<Arc> availableArcs, Itinerary itinerary, List<Port> visitedPortsTheSameDay) {
+    private static Arc findNextArc(List<Arc> availableArcs, Itinerary itinerary, List<Port> visitedPortsTheSameDay, Set<Port> sharedPorts, int delta, int qmax) {
         List<Arc> availableArcsNew = new ArrayList<>();
         for (Arc arc : availableArcs) {
             boolean isPresentInItinerary = false;
@@ -207,6 +216,7 @@ public class InitialSolution {
                 availableArcsNew.add(arc);
             }
         }
+        List<Arc> availableArcsNewSecond = new ArrayList<>();
         if (!availableArcsNew.isEmpty()) {
             for (Arc arc : availableArcsNew) {
                 if (arc.getSecondPort().getVisitLimit() > 0) {
@@ -218,7 +228,7 @@ public class InitialSolution {
                         }
                     }
                     if (!portIsPresent) {
-                        return arc;
+                        availableArcsNewSecond.add(arc);
                     }
                 } else if (arc.getSecondPort().getVisitLimit() == 0) {
                     List<Itinerary> visitedItineraries = arc.getSecondPort().getVisitedItineraries();
@@ -232,14 +242,44 @@ public class InitialSolution {
                                 }
                             }
                             if (!portIsPresent) {
-                                return arc;
+                                availableArcsNewSecond.add(arc);
                             }
                         }
                     }
                 }
             }
         }
+        List<Arc> availableArcsNewThird = new ArrayList<>();
+        if (sharedPorts.size() >= delta){
+            for (Arc arc : availableArcsNewSecond){
+                if (arc.getSecondPort().getVisitedItineraries().size() == 0){
+                    availableArcsNewThird.add(arc);
+                } else {
+                    for (Port shared : sharedPorts){
+                        if (shared.getPortId() == arc.getSecondPort().getPortId() && arc.getSecondPort().getVisitLimit() < qmax){
+                            availableArcsNewThird.add(arc);
+                        }
+                    }
+
+                }
+            }
+        } else {
+            availableArcsNewThird = availableArcsNewSecond;
+        }
+        if (!availableArcsNewThird.isEmpty()){
+            Arc finalArc = availableArcsNewThird.get(0);
+            double minDistance = finalArc.getDistance();
+            for (Arc arc : availableArcsNewThird){
+                if (arc.getDistance() < minDistance && Repository.canMoveFromPort(arc.getSecondPort())){
+                    minDistance = arc.getDistance();
+                    finalArc = arc;
+                }
+            }
+            return finalArc;
+        }
         return null;
     }
+
+
 
 }

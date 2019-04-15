@@ -1,5 +1,6 @@
 import algorithm.AvailableMoves;
 import algorithm.InitialSolution;
+import algorithm.OptimizeValidSolution;
 import algorithm.Validator;
 import model.Arc;
 import model.Itinerary;
@@ -68,12 +69,49 @@ public class Main {
             }
         }
 
-        double penaltyTimeConstraint = Validator.validateTimeConstraint(Repository.getItineraries());
+        /*double penaltyTimeConstraint = Validator.validateTimeConstraint(Repository.getItineraries());
         double penaltyServiceTime = Validator.validateServiceTime(Repository.getItineraries());
         double penaltyNumberOfStops = Validator.validateNumberOfPorts(Repository.getItineraries(), gamma);
         double penaltyNumberOfSharedStops = Validator.validateNumberOfSharedPorts(Repository.getItineraries(), delta);
-        System.out.println(penaltyNumberOfSharedStops);
-        AvailableMoves.exchangePorts(itineraries.get(0));
+       // System.out.println(penaltyNumberOfSharedStops);
+       // AvailableMoves.exchangePorts(itineraries.get(0));
+        double penalty = Validator.validateTimeConstraint(itineraries.get(0));
+        AvailableMoves.changeSpeeds(itineraries);
+        AvailableMoves.changeServiceTime(itineraries);
+        AvailableMoves.changeSpeeds(itineraries);
+        penalty = Validator.validateTimeConstraint(itineraries.get(0));
+
+
+
+
+        AvailableMoves.changeSpeeds(itineraries);
+        AvailableMoves.changeServiceTime(itineraries);
+        double penalty1 = Validator.validateTimeConstraint(itineraries.get(0));
+        double penalty2 = Validator.validateTimeConstraint(itineraries.get(1));
+        double penalty3 = Validator.validateTimeConstraint(itineraries.get(2));
+        AvailableMoves.changeSpeeds(itineraries.get(2));
+        AvailableMoves.changeServiceTime(itineraries.get(2));
+       // AvailableMoves.changeSpeeds(itineraries);
+        penalty3 = Validator.validateTimeConstraint(itineraries.get(2));
+        AvailableMoves.changeSpeeds(itineraries.get(2));
+        AvailableMoves.changeServiceTime(itineraries.get(2));
+        penalty3 = Validator.validateTimeConstraint(itineraries.get(2));
+        double penalty4 = Validator.validateTimeConstraint(itineraries.get(3));
+        AvailableMoves.changeSpeeds(itineraries.get(3));
+        AvailableMoves.changeServiceTime(itineraries.get(3));
+        penalty4 = Validator.validateTimeConstraint(itineraries.get(3));
+        AvailableMoves.exchangePorts(itineraries.get(3), 43);
+        penalty4 = Validator.validateTimeConstraint(itineraries.get(3));
+
+
+        double penalty5 = Validator.validateNumberOfPorts(itineraries, gamma);
+        AvailableMoves.changeSpeeds(itineraries);
+        double penaltyAll = Validator.validateTimeConstraint(itineraries);
+        penalty = Validator.validateTimeConstraint(itineraries.get(0));
+        AvailableMoves.changeServiceTime(itineraries);*/
+
+        OptimizeValidSolution.optimize(itineraries, delta);
+
 
 
     }

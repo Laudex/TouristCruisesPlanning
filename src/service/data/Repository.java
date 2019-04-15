@@ -16,6 +16,15 @@ public class Repository {
     private static List<Speed> speeds;
     private static List<Itinerary> itineraries;
 
+    public static Port findPortById(int portId){
+        for (Port port : ports){
+            if (port.getPortId() == portId){
+                return port;
+            }
+        }
+        return null;
+    }
+
     public static Arc findArcByPorts(int startPortId, int finishPortId){
         for (Arc arc : arcs){
             if (arc.getFirstPort().getPortId() == startPortId){
@@ -25,6 +34,17 @@ public class Repository {
             }
         }
         return null;
+    }
+
+    public static boolean canMoveFromPort(Port firstPort){
+        boolean canMove = false;
+        for (Arc arc : arcs){
+            if (arc.getFirstPort().getPortId() == firstPort.getPortId()){
+                canMove = true;
+                break;
+            }
+        }
+        return canMove;
     }
 
     public static List<Port> getPorts() {
