@@ -1,7 +1,6 @@
-import algorithm.AvailableMoves;
 import algorithm.InitialSolution;
+import algorithm.OptimizeNotValidSolution;
 import algorithm.OptimizeValidSolution;
-import algorithm.Validator;
 import model.Arc;
 import model.Itinerary;
 import model.Port;
@@ -110,7 +109,19 @@ public class Main {
         penalty = Validator.validateTimeConstraint(itineraries.get(0));
         AvailableMoves.changeServiceTime(itineraries);*/
 
+        OptimizeNotValidSolution.optimize(itineraries, delta);
         OptimizeValidSolution.optimize(itineraries, delta);
+        for (int i = 0; i < 100; i++){
+            int start = 4;
+            int finish = Repository.getPorts().size();
+            finish -= start;
+            int random = start + (int) (Math.random() * ++finish);
+            for (Itinerary itinerary : Repository.getItineraries()){
+                if (OptimizeValidSolution.exchangePorts(itinerary, random)){
+                    OptimizeValidSolution.optimize(itineraries, delta);
+                }
+            }
+        }
 
 
 

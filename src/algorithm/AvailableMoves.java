@@ -33,7 +33,7 @@ public class AvailableMoves {
             }
         }
         double finalPenalty = Validator.validateTimeConstraint(itineraries);
-        System.out.println(finalPenalty);
+       // System.out.println(finalPenalty);
     }
 
     public static void changeServiceTime(Itinerary itinerary) {
@@ -55,7 +55,7 @@ public class AvailableMoves {
             }
         }
         double finalPenalty = Validator.validateTimeConstraint(itinerary);
-        System.out.println(finalPenalty);
+        //System.out.println(finalPenalty);
     }
 
     public static void changeSpeeds(List<Itinerary> itineraries) {
@@ -79,7 +79,7 @@ public class AvailableMoves {
             }
         }
         double finalPenalty = Validator.validateTimeConstraint(itineraries);
-        System.out.println(finalPenalty);
+       // System.out.println(finalPenalty);
 
     }
 
@@ -108,7 +108,7 @@ public class AvailableMoves {
 
         }
         double finalPenalty = Validator.validateTimeConstraint(itinerary);
-        System.out.println(finalPenalty);
+       // System.out.println(finalPenalty);
 
     }
 
@@ -118,7 +118,7 @@ public class AvailableMoves {
         int finish = allPorts.size() - 1;
         finish -= start;
         int random = start + (int) (Math.random() * ++finish);
-        System.out.println(random);
+       // System.out.println(random);
         Port randomPort = allPorts.get(random);
         while (!randomPort.getVisitedItineraries().isEmpty()) {
             random = start + (int) (Math.random() * ++finish);
@@ -231,16 +231,19 @@ public class AvailableMoves {
                         }
                     }
                     if (port.getVisitLimit() == 0) {
-                        List<Itinerary> visitedItineraries = port.getVisitedItineraries();
-                        boolean portNotVisitedByRoute = true;
-                        for (Itinerary itinerary1 : visitedItineraries) {
-                            if (itinerary1.getRouteId() == itinerary1.getRouteId()) {
-                                portNotVisitedByRoute = false;
-                            }
+                        continue;
+                    }
+                    // Условие неповторения порта в маршруте
+                    List<Itinerary> visitedItineraries = port.getVisitedItineraries();
+                    boolean portNotVisitedByRoute = true;
+                    for (Itinerary itinerary1 : visitedItineraries) {
+                        if (itinerary1.getRouteId() == itinerary.getRouteId()) {
+                            portNotVisitedByRoute = false;
+                            break;
                         }
-                        if (portNotVisitedByRoute) {
-                            continue;
-                        }
+                    }
+                    if (!portNotVisitedByRoute) {
+                        continue;
                     }
                     for (Integer visitedDays : port.getVisitedDays()){
                         if (visitedDays == i){
@@ -248,7 +251,7 @@ public class AvailableMoves {
                         }
                     }
 
-                    System.out.println(port.getPortId());
+                 //   System.out.println(port.getPortId());
                     boolean findbetter = tryToSwap(itinerary, toRemove, port, i);
                     if (findbetter){
                         return;
@@ -261,6 +264,7 @@ public class AvailableMoves {
     }
 
     public static boolean tryToSwap(Itinerary itinerary, Port toRemove, Port toAdd, int index) {
+        changeSpeeds(itinerary);
         double penaltyOld = Validator.validateTimeConstraint(itinerary);
         Port prev = itinerary.getNumberOfStops().get(index - 1);
         Port next = itinerary.getNumberOfStops().get(index + 1);
@@ -307,10 +311,11 @@ public class AvailableMoves {
             toAdd.getVisitedItineraries().add(itinerary);
             toAdd.setVisitLimit(toAdd.getVisitLimit() - 1);
         }
+        changeSpeeds(itinerary);
 
         double penaltyNew = Validator.validateTimeConstraint(itinerary);
         double penaltyShared = Validator.validateNumberOfSharedPorts(Repository.getItineraries(), 2);
-        if (penaltyNew <= 0.01 && penaltyShared == 0) {
+        if (penaltyNew < penaltyOld && penaltyShared == 0) {
             return true;
         } else {
 
