@@ -68,6 +68,39 @@ public class DataReaderService {
 
     }
 
+    public static void readBigInstances(String base, String extension) throws FileNotFoundException{
+        initializePorts(59);
+        initializeVessels(4);
+        try {
+            XSSFWorkbook excelBookBase = new XSSFWorkbook(new FileInputStream(base));
+            XSSFSheet speedSheet = excelBookBase.getSheet("SPEED");
+            List<Double> speedList = getSpeed(speedSheet);
+            initializeSpeeds(speedList);
+            XSSFSheet vehicleSheet = excelBookBase.getSheet("VEHICLE");
+            setVehicle(vehicleSheet);
+            XSSFSheet fuelSheet = excelBookBase.getSheet("CONSF1");
+            setFuel(fuelSheet);
+            XSSFSheet postTimeSheet = excelBookBase.getSheet("DPOST");
+            setPreAndPostTime(postTimeSheet);
+            XSSFWorkbook excelBookExt = new XSSFWorkbook(new FileInputStream(extension));
+            XSSFSheet arcsSheet = excelBookExt.getSheet("A");
+            setArcsWithoutRoutes(arcsSheet);
+            XSSFSheet cfixSheet = excelBookExt.getSheet("CFIX");
+            setCfix(cfixSheet);
+            XSSFSheet cppServSheet = excelBookExt.getSheet("CPP_SERV");
+            setPrePostCost(cppServSheet);
+            XSSFSheet serviceCostSheet = excelBookExt.getSheet("Cs");
+            setServiceCost(serviceCostSheet);
+            XSSFSheet minServiceTimeSheet = excelBookExt.getSheet("MinS");
+            setMinServiceTime(minServiceTimeSheet);
+
+            //double speedValue = row.getCell(0).getNumericCellValue();
+            // System.out.println(speedValue);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void readDataFromExcel(String file) throws FileNotFoundException {
         initializePorts(49);
         initializeVessels(4);
@@ -204,6 +237,29 @@ public class DataReaderService {
             Double value = row.getCell(0).getNumericCellValue();
             ports.get(i-1).setMinimumServiceTime(value);
         }
+    }
+
+    private static void setArcsWithoutRoutes(XSSFSheet arcsSheet){
+        int lastRow = arcsSheet.getLastRowNum();
+        List<Arc> arcs = new ArrayList<>();
+        int arcId = 1;
+        for (int i = 1; i <= lastRow; i++) {
+            XSSFRow row = arcsSheet.getRow(i);
+            int firstPortIndex = (int) row.getCell(0).getNumericCellValue();
+            int secondPortIndex = (int) row.getCell(1).getNumericCellValue();
+            Arc newArc = new Arc();
+            newArc.setArcId(arcId);
+            newArc.setFirstPort(ports.get(firstPortIndex - 1));
+            newArc.setSecondPort(ports.get(secondPortIndex - 1));
+            newArc.setDistance(row.getCell(2).getNumericCellValue());
+            newArc.getAvailableVessels().add(vessels.get(0));
+            newArc.getAvailableVessels().add(vessels.get(1));
+            newArc.getAvailableVessels().add(vessels.get(2));
+            newArc.getAvailableVessels().add(vessels.get(3));
+            arcs.add(newArc);
+            arcId++;
+        }
+        arcsData = arcs;
     }
 
     private static void setArcs(XSSFSheet arcsSheet) {
