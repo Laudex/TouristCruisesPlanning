@@ -88,13 +88,20 @@ public class InitialSolution {
                     ArcSolution arcSolution = new ArcSolution(arcSoluId, lastArc, itinerary.getVessel(), itinerary.getVessel().getCurrentSpeed());
                     arcSoluId++;
                     itinerary.getArcs().add(arcSolution);
-                    indexToRemove.add(notFinished.indexOf(itinerary));
+                    indexToRemove.add(itinerary.getRouteId());
                 }
 
             }
+
             for (Integer index : indexToRemove) {
-                Itinerary toRemove = notFinished.get(index);
-                notFinished.remove(toRemove);
+                for(Itinerary itinerary : notFinished) {
+                    if (itinerary.getRouteId() == index){
+                        notFinished.remove(itinerary);
+                        break;
+                    }
+              //      Itinerary toRemove = notFinished.get(index);
+                //    notFinished.remove(toRemove);
+                }
             }
         }
         for (Itinerary itinerary : Repository.getItineraries()) {

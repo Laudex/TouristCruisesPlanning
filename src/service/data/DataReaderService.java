@@ -69,7 +69,7 @@ public class DataReaderService {
     }
 
     public static void readBigInstances(String base, String extension) throws FileNotFoundException{
-        initializePorts(59);
+        initializePorts(75);
         initializeVessels(4);
         try {
             XSSFWorkbook excelBookBase = new XSSFWorkbook(new FileInputStream(base));

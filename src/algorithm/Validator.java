@@ -13,8 +13,9 @@ import java.util.Set;
 public class Validator {
     //Начало отсчета - 00:00 первого дня
     private static int R = 7;
+    private static int delta = 4;
 
-    public static double validateNumberOfSharedPorts(List<Itinerary> itineraries, int delta) {
+    public static double validateNumberOfSharedPorts(List<Itinerary> itineraries) {
         double penalty = 0;
         Set<Integer> portIds = new HashSet<>();
         for (Itinerary itinerary : itineraries) {

@@ -8,7 +8,7 @@ public class OptimizeNotValidSolution {
 
     public static void optimize(List<Itinerary> itineraries, int delta){
         double timePenalty = Validator.validateTimeConstraint(itineraries);
-        double sharedPenalty = Validator.validateNumberOfSharedPorts(itineraries, delta);
+        double sharedPenalty = Validator.validateNumberOfSharedPorts(itineraries);
         if (sharedPenalty == 0){
             if (timePenalty > 0.01){
                 double newPenalty = optimizeTimeConstraint(itineraries, timePenalty);
@@ -26,7 +26,7 @@ public class OptimizeNotValidSolution {
                 optimizeByExchange(itineraries, delta);
                 newTimePenalty = Validator.validateTimeConstraint(itineraries);
             }
-            double shared = Validator.validateNumberOfSharedPorts(itineraries, delta);
+            double shared = Validator.validateNumberOfSharedPorts(itineraries);
             if (newTimePenalty < 1){
                 double cost = Cost.calculateCost(itineraries);
                 System.out.println(cost);

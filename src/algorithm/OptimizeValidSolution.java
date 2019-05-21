@@ -7,7 +7,7 @@ import java.util.List;
 
 public class OptimizeValidSolution {
 
-    public static void optimize(List<Itinerary> itineraries, int delta){
+    public static double optimize(List<Itinerary> itineraries, int delta){
         double cost = Cost.calculateCost(itineraries);
         //System.out.println("First cost: " + cost);
         for (Itinerary itinerary : itineraries){
@@ -25,6 +25,7 @@ public class OptimizeValidSolution {
 
         double newCost = Cost.calculateCost(itineraries);
         System.out.println("Final cost: " + newCost);
+        return newCost;
 
     }
     public static void changeSpeeds(Itinerary itinerary) {
@@ -224,7 +225,7 @@ public class OptimizeValidSolution {
         AvailableMoves.changeSpeeds(itinerary);
 
         double penaltyNew = Validator.validateTimeConstraint(itinerary);
-        double penaltyShared = Validator.validateNumberOfSharedPorts(Repository.getItineraries(), 2);
+        double penaltyShared = Validator.validateNumberOfSharedPorts(Repository.getItineraries());
         if (penaltyNew < 1 && penaltyShared == 0) {
             return true;
         } else {

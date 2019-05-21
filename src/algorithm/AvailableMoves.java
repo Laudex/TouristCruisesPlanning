@@ -314,7 +314,7 @@ public class AvailableMoves {
         changeSpeeds(itinerary);
 
         double penaltyNew = Validator.validateTimeConstraint(itinerary);
-        double penaltyShared = Validator.validateNumberOfSharedPorts(Repository.getItineraries(), 2);
+        double penaltyShared = Validator.validateNumberOfSharedPorts(Repository.getItineraries());
         if (penaltyNew < penaltyOld && penaltyShared == 0) {
             return true;
         } else {

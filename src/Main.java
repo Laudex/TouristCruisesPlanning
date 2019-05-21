@@ -16,7 +16,7 @@ import java.util.List;
 public class Main {
 
     // максимально допустимое число портов, которые могут одновременно состоять в 2-х маршрутах
-    public static int delta = 2;
+    public static int delta = 4;
     // минимальное количество портов(остановок) в каждом маршруте
     public static int gamma = 4;
     // максимальное число маршрутов, проходящих через порт i
@@ -25,8 +25,8 @@ public class Main {
     public static int Qmin = 0;
 
     public static void main(String[] args) throws FileNotFoundException {
-        DataReaderService.readDataFromExcel("instances/base_instance.xlsx");
-
+        //DataReaderService.readDataFromExcel("instances/base_instance.xlsx");
+        DataReaderService.readBigInstances("instances/base_instance.xlsx", "instances/instance_70.xlsx");
         List<Port> ports = DataReaderService.getPorts();
         for (Port port : ports){
             port.setVisitLimit(Qmax);
@@ -110,18 +110,27 @@ public class Main {
         AvailableMoves.changeServiceTime(itineraries);*/
 
         OptimizeNotValidSolution.optimize(itineraries, delta);
-        OptimizeValidSolution.optimize(itineraries, delta);
-        for (int i = 0; i < 100; i++){
+        double initialCost = OptimizeValidSolution.optimize(itineraries, delta);
+        double upper = initialCost;
+        for (int i = 0; i < 10000; i++){
             int start = 4;
             int finish = Repository.getPorts().size();
             finish -= start;
             int random = start + (int) (Math.random() * ++finish);
             for (Itinerary itinerary : Repository.getItineraries()){
                 if (OptimizeValidSolution.exchangePorts(itinerary, random)){
-                    OptimizeValidSolution.optimize(itineraries, delta);
+                    double cost = OptimizeValidSolution.optimize(itineraries, delta);
+                    if (cost < initialCost){
+                        initialCost = cost;
+                    }
+                    if (cost > upper){
+                        upper = cost;
+                    }
                 }
             }
         }
+        System.out.println("Result LB: " + initialCost);
+        System.out.println("Result UB: " + upper);
 
 
 
