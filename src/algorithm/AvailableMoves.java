@@ -225,10 +225,15 @@ public class AvailableMoves {
                     if (arcNotCompatibleWithVessel) {
                         continue;
                     }
+                    boolean isIncomp = false;
                     for (Port incPort : itinerary.getVessel().getIncompatiblePorts()) {
                         if (port.getPortId() == incPort.getPortId()) {
-                            continue;
+                            isIncomp = true;
+                            break;
                         }
+                    }
+                    if (isIncomp){
+                        continue;
                     }
                     if (port.getVisitLimit() == 0) {
                         continue;
@@ -245,10 +250,15 @@ public class AvailableMoves {
                     if (!portNotVisitedByRoute) {
                         continue;
                     }
+                    boolean isVisited = false;
                     for (Integer visitedDays : port.getVisitedDays()){
                         if (visitedDays == i){
-                            continue;
+                            isVisited = true;
+                            break;
                         }
+                    }
+                    if (isVisited){
+                        continue;
                     }
 
                  //   System.out.println(port.getPortId());

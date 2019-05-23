@@ -77,7 +77,7 @@ public class OptimizeNotValidSolution {
                 AvailableMoves.exchangePorts(maxPenItinerary, maxPenItinerary.getNumberOfStops().get(i).getPortId());
                 //AvailableMoves.exchangePorts(maxPenItinerary,43);
                 double newPenalty = Validator.validateTimeConstraint(maxPenItinerary);
-               // System.out.println(newPenalty);
+                System.out.println("New = " + newPenalty);
                 if (newPenalty < 1) {
                     break;
                 }

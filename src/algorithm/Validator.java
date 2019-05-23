@@ -13,7 +13,7 @@ import java.util.Set;
 public class Validator {
     //Начало отсчета - 00:00 первого дня
     private static int R = 7;
-    private static int delta = 3;
+    private static int delta = 1;
 
     public static double validateNumberOfSharedPorts(List<Itinerary> itineraries) {
         double penalty = 0;

@@ -18,17 +18,17 @@ import java.util.List;
 public class Main {
 
     // максимально допустимое число портов, которые могут одновременно состоять в 2-х маршрутах
-    public static int delta = 3;
+    public static int delta = 1;
     // минимальное количество портов(остановок) в каждом маршруте
-    public static int gamma = 4;
+    public static int gamma = 6;
     // максимальное число маршрутов, проходящих через порт i
     public static int Qmax = 2;
     // минимальное число маршрутов, проходящих через порт i
     public static int Qmin = 0;
 
     public static void main(String[] args) throws FileNotFoundException {
-        //DataReaderService.readDataFromExcel("instances/base_instance.xlsx");
-        DataReaderService.readBigInstances("instances/base_instance.xlsx", "instances/instance_70.xlsx");
+        DataReaderService.readDataFromExcel("instances/base_instance.xlsx");
+        //DataReaderService.readBigInstances("instances/base_instance.xlsx", "instances/instance_70.xlsx");
         List<Port> ports = DataReaderService.getPorts();
         for (Port port : ports){
             port.setVisitLimit(Qmax);
@@ -60,7 +60,7 @@ public class Main {
 
         //InitialSolution.findInitialSolution(3, gamma, Qmax, Qmin);
         InitialSolNew.findInitialSolution(delta, gamma, Qmax, Qmin);
-        for (Itinerary itinerary : Repository.getItineraries()){
+       /* for (Itinerary itinerary : Repository.getItineraries()){
             int day = 1;
             for (Port port : itinerary.getNumberOfStops()){
                 if (port.getPortId() != 2 && port.getPortId() != 3){
@@ -69,7 +69,7 @@ public class Main {
                 }
 
             }
-        }
+        }*/
 
         /*double penaltyTimeConstraint = Validator.validateTimeConstraint(Repository.getItineraries());
         double penaltyServiceTime = Validator.validateServiceTime(Repository.getItineraries());
