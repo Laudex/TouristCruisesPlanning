@@ -1,6 +1,8 @@
+import algorithm.InitialSolNew;
 import algorithm.InitialSolution;
 import algorithm.OptimizeNotValidSolution;
 import algorithm.OptimizeValidSolution;
+import algorithm.Validator;
 import model.Arc;
 import model.Itinerary;
 import model.Port;
@@ -16,7 +18,7 @@ import java.util.List;
 public class Main {
 
     // максимально допустимое число портов, которые могут одновременно состоять в 2-х маршрутах
-    public static int delta = 4;
+    public static int delta = 3;
     // минимальное количество портов(остановок) в каждом маршруте
     public static int gamma = 4;
     // максимальное число маршрутов, проходящих через порт i
@@ -56,7 +58,8 @@ public class Main {
         }
         Repository.setItineraries(itineraries);
 
-        InitialSolution.findInitialSolution(delta, gamma, Qmax, Qmin);
+        //InitialSolution.findInitialSolution(3, gamma, Qmax, Qmin);
+        InitialSolNew.findInitialSolution(delta, gamma, Qmax, Qmin);
         for (Itinerary itinerary : Repository.getItineraries()){
             int day = 1;
             for (Port port : itinerary.getNumberOfStops()){
@@ -108,6 +111,7 @@ public class Main {
         double penaltyAll = Validator.validateTimeConstraint(itineraries);
         penalty = Validator.validateTimeConstraint(itineraries.get(0));
         AvailableMoves.changeServiceTime(itineraries);*/
+        double penalty = Validator.validateTimeConstraint(itineraries);
 
         OptimizeNotValidSolution.optimize(itineraries, delta);
         double initialCost = OptimizeValidSolution.optimize(itineraries, delta);
